@@ -121,7 +121,7 @@ class Twitter(SetUp):
                     break
 
             except Exception as e:
-                canMg = False
+                canMg = "Error"
                 self.logger.info("Error found")
                 self.logger.info("Exception detected: {}".format(str(e)))
                 seleniumerrors += 1
