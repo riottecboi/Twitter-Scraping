@@ -108,7 +108,6 @@ class Twitter(SetUp):
                             result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link}
 
                         except Exception as e:
-                            self.logger.info(str(e))
                             canMg = False
                             check.click()
                             self.logger.info(f"This {link} profile not available for message -- {canMg}")

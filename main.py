@@ -22,6 +22,7 @@ for link in profiles:
     result = twitter.search(link)
     results.append(result)
 
+print('Generating CSV file ...')
 generateCSV = setting.generate_csv(results)
-print(generateCSV)
+print('The path of file located at: {}'.format(generateCSV))
 

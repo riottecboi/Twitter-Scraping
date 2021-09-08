@@ -9,7 +9,7 @@ import csv
 
 class SetUp:
     selenium_hub = ""
-    proxy_url = ""
+    proxy_url = None
     phone = ""
     email = ""
     username = ""
@@ -36,12 +36,6 @@ class SetUp:
 
     def webdriver_init(self, Firefox=False):
         if Firefox is True:
-            if self.proxy_url:
-                proxy_url = self.proxy_url
-            else:
-                proxy_url = random.choice(self.proxy_urls)
-            raw_input = proxy_url.split('//')
-            proxy = raw_input[1].split(':')
             firefoxcaps = {
                 'browserName': 'firefox',
                 'marionette': True,
@@ -60,7 +54,13 @@ class SetUp:
                     }
                 }
             }
-            if proxy_url is not None:
+            if self.proxy_urls is not None or self.proxy_url is not None:
+                if self.proxy_url:
+                    proxy_url = self.proxy_url
+                else:
+                   proxy_url = random.choice(self.proxy_urls)
+                raw_input = proxy_url.split('//')
+                proxy = raw_input[1].split(':')
                 profile = webdriver.FirefoxProfile()
                 profile.set_preference("network.proxy.type", 1)
                 profile.set_preference("network.proxy.http", proxy[0])
@@ -69,6 +69,9 @@ class SetUp:
                 profile.set_preference("network.proxy.https_port", proxy[1])
                 profile.update_preferences()
                 return webdriver.Remote(self.selenium_hub, firefoxcaps, browser_profile=profile)
+            else:
+                return webdriver.Remote(self.selenium_hub, firefoxcaps)
+
         else:
             option = webdriver.ChromeOptions()
             self.software_names = [SoftwareName.CHROME.value]
