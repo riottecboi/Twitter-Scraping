@@ -16,7 +16,7 @@ logger.addHandler(ch)
 with open('config.json', encoding='utf-8') as json_data_file:
     kwargs = json.load(json_data_file)
 results = []
-profiles = kwargs['profiles']
+profiles = setting.get_list_links('links.txt')
 twitter = Twitter(logger=logger, **kwargs)
 for link in profiles:
     result = twitter.search(link)

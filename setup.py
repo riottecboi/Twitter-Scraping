@@ -122,3 +122,11 @@ class SetUp:
         except Exception as e:
             print(str(e))
             return 'Can\'t generate CSV'
+
+    def get_list_links(self, path):
+        myfile = open(path, 'r')
+        contents = myfile.readlines()
+        links = []
+        for content in contents:
+            links.append(content.strip())
+        return links
