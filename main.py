@@ -25,4 +25,8 @@ for link in profiles:
 print('Generating CSV file ...')
 generateCSV = setting.generate_csv(results)
 print('The path of file located at: {}'.format(generateCSV))
+print('Syncing data to Mega Storage Cloud')
+upload=setting.sync_to_mega(generateCSV,'twitter',**kwargs)
+print('Result: {}'.format(upload))
+print('Finished')
 

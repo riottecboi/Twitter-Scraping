@@ -6,6 +6,8 @@ from selenium import webdriver
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem, Popularity
 import csv
+from mega import Mega
+
 
 class SetUp:
     selenium_hub = ""
@@ -130,3 +132,31 @@ class SetUp:
         for content in contents:
             links.append(content.strip())
         return links
+
+    def sync_to_mega(self, file, **kwargs):
+        mega = Mega()
+        try:
+            m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
+            print('Login success')
+            u = m.get_user()
+            print('Hi ! {}'.format(u['name']))
+            storage = m.get_storage_space(giga=True)
+            print('Current account storage space: {}/{} Gb'.format(round(storage['used']), storage['total']))
+            try:
+                destination = m.find(kwargs['folder'])
+                f = m.upload(file, destination[0])
+                getDetails = m.get_upload_link(f)
+                print('This file is uploaded to folder - {}'.format(kwargs['folder']))
+                print('Get public link file: {}'.format(getDetails))
+                ret = str(getDetails)
+
+            except:
+                print('This folder not exist')
+                f = m.upload(file)
+                getDetails = m.get_upload_link(f)
+                print('Get public link file: {}'.format(getDetails))
+                ret = str(getDetails)
+        except Exception as e:
+            print(str(e))
+            ret = str(e)
+        return ret
