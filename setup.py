@@ -7,7 +7,7 @@ from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem, Popularity
 import csv
 from mega import Mega
-
+from datetime import datetime
 
 class SetUp:
     selenium_hub = ""
@@ -112,8 +112,9 @@ class SetUp:
         os.remove(path)
 
     def generate_csv(self, raws):
-        path = '/tmp/{}.csv'.format(''.join(random.choice(string.ascii_lowercase) for i in range(4)))
-        headers = {"Name": None, "Username": None, "Messages": None, "Links": None}
+        date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S")
+        path = '/tmp/data_{}.csv'.format(date)
+        headers = {"Name": None, "Username": None, "Messages": None, "Links": None, "Dead": None}
         try:
             with open(path, 'w', encoding='UTF8') as f:
                 w = csv.DictWriter(f, headers.keys())
@@ -133,7 +134,22 @@ class SetUp:
             links.append(content.strip())
         return links
 
-    def sync_to_mega(self, file, **kwargs):
+    def download_mg_file(self, **kwargs):
+        mega = Mega()
+        path = '/home/twitter'
+        try:
+            m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
+            print('Login success')
+            print('Downloading profile links...')
+            f = m.find(kwargs['file'])
+            m.download(f, path)
+            print('Downloaded')
+            ret = f"{path}/{kwargs['file']}"
+        except Exception as e:
+            ret = str(e)
+        return ret
+
+    def sync_to_mega(self, filename, **kwargs):
         mega = Mega()
         try:
             m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
@@ -144,7 +160,7 @@ class SetUp:
             print('Current account storage space: {}/{} Gb'.format(round(storage['used']), storage['total']))
             try:
                 destination = m.find(kwargs['folder'])
-                f = m.upload(file, destination[0])
+                f = m.upload(filename, destination[0])
                 getDetails = m.get_upload_link(f)
                 print('This file is uploaded to folder - {}'.format(kwargs['folder']))
                 print('Get public link file: {}'.format(getDetails))
@@ -152,7 +168,7 @@ class SetUp:
 
             except:
                 print('This folder not exist')
-                f = m.upload(file)
+                f = m.upload(filename)
                 getDetails = m.get_upload_link(f)
                 print('Get public link file: {}'.format(getDetails))
                 ret = str(getDetails)
