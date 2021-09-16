@@ -136,7 +136,7 @@ class SetUp:
 
     def download_mg_file(self, **kwargs):
         mega = Mega()
-        path = '/home/twitter'
+        path = kwargs['path']
         try:
             m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
             print('Login success')

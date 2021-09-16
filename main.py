@@ -17,8 +17,8 @@ with open('config.json', encoding='utf-8') as json_data_file:
     kwargs = json.load(json_data_file)
 results = []
 try:
-    download=setting.download_mg_file(**kwargs)
-    profiles = setting.get_list_links(download)
+    #download=setting.download_mg_file(**kwargs)
+    profiles = setting.get_list_links('links.txt')
     twitter = Twitter(logger=logger, **kwargs)
     for link in profiles:
         result = twitter.search(link)
