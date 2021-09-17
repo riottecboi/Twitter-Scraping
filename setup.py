@@ -177,7 +177,7 @@ class SetUp:
             ret = str(e)
         return ret
 
-    def distributed_links(self, kwargs):
+    def distributed_links(self, **kwargs):
         try:
             filenames=[]
             download=self.download_mg_file(**kwargs)

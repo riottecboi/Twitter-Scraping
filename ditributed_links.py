@@ -17,6 +17,6 @@ with open('config.json', encoding='utf-8') as json_data_file:
 try:
     logger.info('Downloading link file')
     setting.distributed_links(**file)
-    logger.info('Downloaded - finished')
+    logger.info('Distributed - finished')
 except Exception as e:
     logger.info(str(e))
