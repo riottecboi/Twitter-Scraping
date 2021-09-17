@@ -171,7 +171,6 @@ class Twitter(SetUp):
                             result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False}
 
                     except:
-                        self.logger.info(str(e))
                         canMg = False
                         self.logger.info(f"This {link} profile not available for message -- {canMg}")
                         result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False}

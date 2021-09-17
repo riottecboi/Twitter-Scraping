@@ -176,3 +176,35 @@ class SetUp:
             print(str(e))
             ret = str(e)
         return ret
+
+    def distributed_links(self, kwargs):
+        try:
+            filenames=[]
+            download=self.download_mg_file(**kwargs)
+            for i in range(1, 15):
+                list_remove = []
+                links = 0
+                list_return = self.get_list_links(download)
+                if len(list_return) > 0:
+                    dis_file = 'links/{}.txt'.format(i)
+                    with open(dis_file, 'w') as f1:
+                        for link in list_return:
+                            if links <= 20:
+                                f1.write(link + "\n")
+                                list_remove.append(link)
+                                links += 1
+                        for remove in list_remove:
+                            list_return.remove(remove)
+
+                        new_file = open("links.txt", "w")
+                        for update in list_return:
+                            new_file.write(update + "\n")
+                        new_file.close()
+                    f1.close()
+                    filenames.append(dis_file)
+                else:
+                    break
+            ret = filenames
+        except Exception as e:
+            ret=str(e)
+        return ret
