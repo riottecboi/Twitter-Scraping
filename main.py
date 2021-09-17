@@ -24,6 +24,7 @@ random_conf = random.choice(conf_files)
 with open('configures/{}'.format(random_conf), encoding='utf-8') as json_data_file:
     kwargs = json.load(json_data_file)
 
+logger.info('Using configure {}'.format(random_conf))
 results = []
 links_path = file['links_path']
 link_files = os.listdir(links_path)
@@ -31,6 +32,7 @@ link_files = os.listdir(links_path)
 try:
 
     random_file = random.choice(link_files)
+    logger.info('Take {} to scrape data'.format(random_file))
     profiles = setting.get_list_links(links_path+f"/{random_file}")
     twitter = Twitter(logger=logger, **kwargs)
     for link in profiles:
@@ -42,6 +44,7 @@ try:
     logger.info('Syncing data to Mega Storage Cloud')
     upload=setting.sync_to_mega(generateCSV,**kwargs)
     logger.info('Result: {}'.format(upload))
+    logger.info('{} is done scrapped - removed this')
     os.remove(links_path+f"/{random_file}")
 except Exception as e:
     logger.info(str(e))
