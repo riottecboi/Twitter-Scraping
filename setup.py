@@ -1,6 +1,6 @@
 import os
 import random
-import string
+import json
 import pickle
 from selenium import webdriver
 from random_user_agent.user_agent import UserAgent
@@ -111,9 +111,9 @@ class SetUp:
                 driver.add_cookie(cookie)
         os.remove(path)
 
-    def generate_csv(self, raws):
+    def generate_csv(self, raws, username):
         date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S")
-        path = '/tmp/data_{}.csv'.format(date)
+        path = '/tmp/{}_data_{}.csv'.format(username,date)
         headers = {"Name": None, "Username": None, "Messages": None, "Links": None, "Dead": None}
         try:
             with open(path, 'w', encoding='UTF8') as f:
@@ -208,3 +208,39 @@ class SetUp:
         except Exception as e:
             ret=str(e)
         return ret
+
+    def download_mg_conf_file(self, **kwargs):
+        mega = Mega()
+        path = kwargs['configure_path']
+        try:
+            m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
+            print('Login success')
+            print('Downloading profile links...')
+            f = m.find(kwargs['configure_file'])
+            m.download(f, path)
+            print('Downloaded')
+            ret = f"{path}/{kwargs['configure_file']}"
+        except Exception as e:
+            ret = str(e)
+        return ret
+
+    def distributed_configures(self, **kwargs):
+        try:
+            filenames=[]
+            download = self.download_mg_conf_file(**kwargs)
+            with open(download, encoding='utf-8') as json_data_file:
+                file = json.load(json_data_file)
+            numb = 0
+            for conf in file['configures']:
+                dis_file = 'configures/{}-config.json'.format(numb)
+                with open(dis_file, 'w') as f1:
+                    f1.write(json.dumps(conf))
+                    f1.close()
+                filenames.append(dis_file)
+                numb+=1
+            os.remove(download)
+            ret = filenames
+        except Exception as e:
+            ret=str(e)
+        return ret
+

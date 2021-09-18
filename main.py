@@ -17,12 +17,13 @@ logger.addHandler(ch)
 with open('config.json', encoding='utf-8') as json_data_file:
     file = json.load(json_data_file)
 
-conf_path = file['conf_path']
-conf_files = os.listdir(conf_path)
-random_conf = random.choice(conf_files)
+# conf_path = file['conf_path']
+conf_files = setting.distributed_configures(**file)
+random_conf = conf_files
 
-with open('configures/{}'.format(random_conf), encoding='utf-8') as json_data_file:
+with open('{}'.format(random_conf), 'r', encoding='utf-8') as json_data_file:
     kwargs = json.load(json_data_file)
+    username = kwargs['username']
 
 logger.info('Using configure {}'.format(random_conf))
 results = []
@@ -39,7 +40,7 @@ try:
         result = twitter.search(link)
         results.append(result)
     logger.info('Generating CSV file ...')
-    generateCSV = setting.generate_csv(results)
+    generateCSV = setting.generate_csv(results, username)
     logger.info('The path of file located at: {}'.format(generateCSV))
     logger.info('Syncing data to Mega Storage Cloud')
     upload=setting.sync_to_mega(generateCSV,**kwargs)
