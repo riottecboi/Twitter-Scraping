@@ -111,10 +111,10 @@ class SetUp:
                 driver.add_cookie(cookie)
         os.remove(path)
 
-    def generate_csv(self, raws, username):
+    def generate_csv(self, raws):
         date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S")
-        path = '/tmp/{}_data_{}.csv'.format(username,date)
-        headers = {"Name": None, "Username": None, "Messages": None, "Links": None, "Dead": None}
+        path = '/tmp/data_{}.csv'.format(date)
+        headers = {"Name": None, "Username": None, "Messages": None, "Links": None, "Dead": None, 'Scrapped by': None}
         try:
             with open(path, 'w', encoding='UTF8') as f:
                 w = csv.DictWriter(f, headers.keys())

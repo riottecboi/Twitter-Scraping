@@ -33,7 +33,7 @@ class Twitter(SetUp):
         path = '/tmp/{}.txt'.format(''.join(random.choice(string.ascii_lowercase) for i in range(4)))
         url = 'https://twitter.com/login'
         driver = super().webdriver_init()
-        result = {'Name': None, 'Username': None, 'Messages': None, 'Links': link, 'Dead': None}
+        result = {'Name': None, 'Username': None, 'Messages': None, 'Links': link, 'Dead': None,'Scrapped by': self.username}
         seleniumerrors = 0
         anotherLogin = "To get started, first enter your phone, email, or @username"
         needUsername = "There was unusual login activity on your account. To help keep your account safe, please enter your phone number or username to verify it’s you."
@@ -138,7 +138,7 @@ class Twitter(SetUp):
                 if "This account doesn’t exist" in driver.page_source:
                     canMg = False
                     self.logger.info('This account no longer exist')
-                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': True}
+                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': True, 'Scrapped by': self.username}
                     break
                 else:
                     try:
@@ -162,18 +162,18 @@ class Twitter(SetUp):
                             available.click()
                             canMg = True
                             self.logger.info(f"This {link} profile available for message -- {canMg}")
-                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False}
+                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
 
                         except:
                             canMg = False
                             check.click()
                             self.logger.info(f"This {link} profile not available for message -- {canMg}")
-                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False}
+                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
 
                     except:
                         canMg = False
                         self.logger.info(f"This {link} profile not available for message -- {canMg}")
-                        result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False}
+                        result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
                     break
 
             except Exception as e:
@@ -182,7 +182,7 @@ class Twitter(SetUp):
                 self.logger.info("Exception detected: {}".format(str(e)))
                 seleniumerrors += 1
                 if seleniumerrors > 3:
-                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': None}
+                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': None,'Scrapped by': self.username}
                     break
                 else:
                     self.logger.info('{} try'.format(seleniumerrors))

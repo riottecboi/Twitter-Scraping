@@ -17,30 +17,28 @@ logger.addHandler(ch)
 with open('config.json', encoding='utf-8') as json_data_file:
     file = json.load(json_data_file)
 
-# conf_path = file['conf_path']
-conf_files = setting.distributed_configures(**file)
-random_conf = conf_files
+conf_path = file['conf_path']
+conf_files = os.listdir(conf_path)
 
-with open('{}'.format(random_conf), 'r', encoding='utf-8') as json_data_file:
-    kwargs = json.load(json_data_file)
-    username = kwargs['username']
-
-logger.info('Using configure {}'.format(random_conf))
 results = []
 links_path = file['links_path']
 link_files = os.listdir(links_path)
 
 try:
-
     random_file = random.choice(link_files)
     logger.info('Take {} to scrape data'.format(random_file))
     profiles = setting.get_list_links(links_path+f"/{random_file}")
-    twitter = Twitter(logger=logger, **kwargs)
     for link in profiles:
+        random_conf = random.choice(conf_files)
+        with open('{}/{}'.format(conf_path,random_conf), 'r', encoding='utf-8') as json_data_file:
+            kwargs = json.load(json_data_file)
+            username = kwargs['username']
+        logger.info('Using configure {} with username {}'.format(random_conf, username))
+        twitter = Twitter(logger=logger, **kwargs)
         result = twitter.search(link)
         results.append(result)
     logger.info('Generating CSV file ...')
-    generateCSV = setting.generate_csv(results, username)
+    generateCSV = setting.generate_csv(results)
     logger.info('The path of file located at: {}'.format(generateCSV))
     logger.info('Syncing data to Mega Storage Cloud')
     upload=setting.sync_to_mega(generateCSV,**kwargs)

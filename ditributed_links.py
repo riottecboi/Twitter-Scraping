@@ -15,6 +15,9 @@ with open('config.json', encoding='utf-8') as json_data_file:
     file = json.load(json_data_file)
 
 try:
+    logger.info('Downloading configure file')
+    setting.distributed_configures(**file)
+    logger.info('Configure downloaded')
     logger.info('Downloading link file')
     setting.distributed_links(**file)
     logger.info('Distributed - finished')
