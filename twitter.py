@@ -142,8 +142,8 @@ class Twitter(SetUp):
                     break
                 else:
                     try:
-                        raw_name = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]'
-                                                                '/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[1]/div/span[1]/span')
+                        sleep(5)
+                        raw_name = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[1]/div/span[1]/span')
                         name = raw_name.get_attribute('innerHTML')
                     except:
                         name = None

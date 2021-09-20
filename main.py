@@ -41,9 +41,9 @@ try:
     generateCSV = setting.generate_csv(results)
     logger.info('The path of file located at: {}'.format(generateCSV))
     logger.info('Syncing data to Mega Storage Cloud')
-    upload=setting.sync_to_mega(generateCSV,**kwargs)
+    upload=setting.sync_to_mega(generateCSV,**file)
     logger.info('Result: {}'.format(upload))
-    logger.info('{} is done scrapped - removed this')
+    logger.info('{} is done scrapped - removed this'.format(random_file))
     os.remove(links_path+f"/{random_file}")
 except Exception as e:
     logger.info(str(e))
