@@ -149,7 +149,7 @@ class SetUp:
             ret = str(e)
         return ret
 
-    def sync_to_mega(self, filename, **kwargs):
+    def sync_to_mega(self, filename, delete=False, **kwargs):
         mega = Mega()
         try:
             m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
@@ -159,6 +159,11 @@ class SetUp:
             storage = m.get_storage_space(giga=True)
             print('Current account storage space: {}/{} Gb'.format(round(storage['used']), storage['total']))
             try:
+                if delete is True:
+                    f = filename.split('/')
+                    file = f[1]
+                    delete_file = m.find(file)
+                    m.delete(delete_file[0])
                 destination = m.find(kwargs['folder'])
                 f = m.upload(filename, destination[0])
                 getDetails = m.get_upload_link(f)

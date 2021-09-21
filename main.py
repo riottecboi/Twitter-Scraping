@@ -37,21 +37,26 @@ try:
             logger.info('Using configure {} with username {}'.format(random_conf, username))
             twitter = Twitter(logger=logger, **kwargs)
             result = twitter.search(link)
+            logger.info('Updating raw data ...')
             update = setting.update_data_csv(result)
             results.append(result)
-        logger.info('Updating raw data ...')
-
         logger.info('{} is done scrapped - removed this'.format(random_file))
         os.remove(links_path+f"/{random_file}")
+        link_files = os.listdir(links_path)
+        if len(link_files) == 0:
+            with open('raw/data.json', encoding='utf-8') as json_data_file:
+                results = json.load(json_data_file)
+            logger.info('Generating CSV file ...')
+            generateCSV = setting.generate_csv(results)
+            logger.info('The path of file located at: {}'.format(generateCSV))
+            logger.info('Syncing data to Mega Storage Cloud')
+            upload = setting.sync_to_mega(generateCSV, **file)
+            logger.info('Result: {}'.format(upload))
     else:
-        with open('raw/data.json', encoding='utf-8') as json_data_file:
-            results = json.load(json_data_file)
-        logger.info('Generating CSV file ...')
-        generateCSV = setting.generate_csv(results)
-        logger.info('The path of file located at: {}'.format(generateCSV))
-        logger.info('Syncing data to Mega Storage Cloud')
-        upload=setting.sync_to_mega(generateCSV,**file)
-        logger.info('Result: {}'.format(upload))
+        with open('raw/data.json', 'w') as clean:
+            clean.write(json.dumps([]))
+            clean.close()
+        logger.info('Cleaned raw data')
 except Exception as e:
     logger.info(str(e))
 logger.info('Finished')

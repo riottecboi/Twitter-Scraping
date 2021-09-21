@@ -19,5 +19,5 @@ with open('config.json', encoding='utf-8') as json_data_file:
 path = 'raw/data.json'
 logger.info('The path of file located at: {}'.format(path))
 logger.info('Syncing data to Mega Storage Cloud')
-upload=setting.sync_to_mega(path,**file)
+upload=setting.sync_to_mega(path,delete=True,**file)
 logger.info('Finished')
