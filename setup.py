@@ -8,7 +8,7 @@ from random_user_agent.params import SoftwareName, OperatingSystem, Popularity
 import csv
 from mega import Mega
 from datetime import datetime
-
+import string
 class SetUp:
     selenium_hub = ""
     proxy_url = None
@@ -181,15 +181,15 @@ class SetUp:
         try:
             filenames=[]
             download=self.download_mg_file(**kwargs)
-            for i in range(1, 15):
+            for i in range(1, 22):
                 list_remove = []
                 links = 0
                 list_return = self.get_list_links(download)
                 if len(list_return) > 0:
-                    dis_file = 'links/{}.txt'.format(i)
+                    dis_file = 'links/{}.txt'.format(''.join(random.choice(string.ascii_lowercase) for i in range(4)))
                     with open(dis_file, 'w') as f1:
                         for link in list_return:
-                            if links <= 20:
+                            if links <= 50:
                                 f1.write(link + "\n")
                                 list_remove.append(link)
                                 links += 1
@@ -243,4 +243,18 @@ class SetUp:
         except Exception as e:
             ret=str(e)
         return ret
+
+    def update_data_csv(self, datas):
+        results = []
+        des_file = 'raw/data.json'
+        with open(des_file, encoding='utf-8') as json_data_file:
+            raw = json.load(json_data_file)
+        for r in raw:
+            results.append(r)
+        results.append(datas)
+        #results.extend(datas)
+        with open(des_file, 'w') as f1:
+            f1.write(json.dumps(results))
+            f1.close()
+        print('Updated')
 
