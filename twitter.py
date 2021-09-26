@@ -178,6 +178,11 @@ class Twitter(SetUp):
 
             except Exception as e:
                 canMg = "Error"
+                if "This account doesn’t exist" in driver.page_source:
+                    canMg = False
+                    self.logger.info('This account no longer exist')
+                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': True, 'Scrapped by': self.username}
+                    break
                 self.logger.info("Error found")
                 self.logger.info("Exception detected: {}".format(str(e)))
                 seleniumerrors += 1
