@@ -196,3 +196,154 @@ class Twitter(SetUp):
         driver.close()
         driver.quit()
         return result
+
+    def get_profile_by_video_clip_link(self, link):
+        results = []
+        driver = super().webdriver_init()
+        seleniumerrors = 0
+        while True:
+            try:
+                if link == "":
+                    self.logger.info("No input given")
+                    break
+                driver.get(link)
+                sleep(3)
+                self.logger.info('Got link {}'.format(link))
+                profile_link = driver.find_element_by_xpath('/html/body/div/div/div/div/main/div/section[2]/div/div[1]/a').get_attribute('href')
+                link = profile_link.replace('home', 'about')
+                driver.get(link)
+                self.logger.info('Going to profile-about: {}'.format(driver.current_url))
+                links = driver.find_elements_by_class_name('tw-col')
+                for l in links:
+                    try:
+                        a = l.find_element_by_tag_name('a').get_attribute('href')
+                        if a is not None:
+                            results.append(a)
+                            self.logger.info('Collecting & appending {} to the list'.format(a))
+                    except:
+                        continue
+                self.logger.info('Collecting & appending {} to the list'.format(driver.current_url))
+                results.append(driver.current_url)
+                self.logger.info('Collected total {} links'.format(len(results)))
+                break
+
+            except Exception as e:
+                self.logger.info("Error found")
+                self.logger.info("Exception detected: {}".format(str(e)))
+                seleniumerrors += 1
+                if seleniumerrors > 3:
+                    self.logger.info('Failed - Exited')
+                    break
+                else:
+                    self.logger.info('{} try'.format(seleniumerrors))
+                    driver.close()
+                    driver = super().webdriver_init()
+                    continue
+        driver.close()
+        driver.quit()
+        return results
+
+    def get_profile_by_profile_link(self, link):
+        results = []
+        driver = super().webdriver_init()
+        seleniumerrors = 0
+        while True:
+            try:
+                if link == "":
+                    self.logger.info("No input given")
+                    break
+                driver.get(link)
+                sleep(3)
+                cur_link = driver.current_url
+                link = cur_link.split('https://')[1].split('/')
+                updateLink = 'https://' + link[0] + '/' + link[1] + '/about'
+                driver.get(updateLink)
+                self.logger.info('Going to profile-about: {}'.format(driver.current_url))
+                links = driver.find_elements_by_class_name('tw-col')
+                for l in links:
+                    try:
+                        a = l.find_element_by_tag_name('a').get_attribute('href')
+                        if a is not None:
+                            results.append(a)
+                            self.logger.info('Collecting & appending {} to the list'.format(a))
+                    except:
+                        continue
+                self.logger.info('Collecting & appending {} to the list'.format(driver.current_url))
+                results.append(driver.current_url)
+                self.logger.info('Collected total {} links'.format(len(results)))
+                break
+            except Exception as e:
+                self.logger.info("Error found")
+                self.logger.info("Exception detected: {}".format(str(e)))
+                seleniumerrors += 1
+                if seleniumerrors > 3:
+                    self.logger.info('Failed - Exited')
+                    break
+                else:
+                    self.logger.info('{} try'.format(seleniumerrors))
+                    driver.close()
+                    driver = super().webdriver_init()
+                    continue
+        driver.close()
+        driver.quit()
+        return results
+
+    def get_profile_by_directory_link(self, link, v2=False):
+        results = []
+        links = []
+        driver = super().webdriver_init()
+        seleniumerrors = 0
+        while True:
+            try:
+                if link == "":
+                    self.logger.info("No input given")
+                    break
+                driver.get(link)
+                sleep(3)
+                self.logger.info('Got link {}'.format(link))
+                if v2 is False:
+                    r = driver.find_element_by_xpath('/html/body/div[1]/div/div[2]/div[1]/main/div[2]/div[3]/div/div/div/div/div/div[4]/div[2]/div[1]/div[1]')
+                    raw = r.find_elements_by_class_name('tw-link')
+                else:
+                    raw = driver.find_elements_by_class_name('ScCoreLink-sc-1t11s9q-0')
+                for l in raw:
+                    try:
+                        li = l.find_element_by_class_name('tw-link')
+                        lin = li.get_attribute('href')
+                        lik = lin.replace('videos', 'about')
+                        self.logger.info('Adding new profile link')
+                        links.append(lik)
+                    except:
+                        continue
+                for link in links:
+                    driver.get(link)
+                    self.logger.info('Going to profile-about: {}'.format(driver.current_url))
+                    raws = driver.find_elements_by_class_name('tw-col')
+                    for data in raws:
+                        try:
+                            a = data.find_element_by_tag_name('a').get_attribute('href')
+                            if a is not None:
+                                results.append(a)
+                                self.logger.info('Collecting & appending {} to the list'.format(a))
+                        except:
+                            continue
+                    self.logger.info('Collecting & appending {} to the list'.format(driver.current_url))
+                    results.append(driver.current_url)
+
+                break
+            except Exception as e:
+                self.logger.info("Error found")
+                self.logger.info("Exception detected: {}".format(str(e)))
+                seleniumerrors += 1
+                if seleniumerrors > 3:
+                    self.logger.info('Failed - Exited')
+                    break
+                else:
+                    self.logger.info('{} try'.format(seleniumerrors))
+                    driver.close()
+                    driver = super().webdriver_init()
+                    continue
+
+        driver.close()
+        driver.quit()
+        return results

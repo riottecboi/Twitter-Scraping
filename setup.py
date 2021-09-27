@@ -95,6 +95,7 @@ class SetUp:
                     proxy = self.proxy_url
                 else:
                     proxy = random.choice(self.proxy_urls)
+                    print('Using proxy: {}'.format(proxy))
                 option.add_argument("--proxy-server={}".format(proxy))
             return webdriver.Remote(
                 desired_capabilities=option.to_capabilities(),
@@ -262,4 +263,11 @@ class SetUp:
             f1.write(json.dumps(results))
             f1.close()
         print('Updated')
+
+    def write_file(self, path, list_return):
+        new_file = open(path, "w")
+        for update in list_return:
+            new_file.write(update + "\n")
+        new_file.close()
+        return path
 
