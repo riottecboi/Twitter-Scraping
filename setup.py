@@ -271,3 +271,17 @@ class SetUp:
         new_file.close()
         return path
 
+    def download_mg_follower_file(self, **kwargs):
+        mega = Mega()
+        path = kwargs['account_path']
+        try:
+            m = mega.login(kwargs['mg_email'], kwargs['mg_password'])
+            print('Login success')
+            print('Downloading account links...')
+            f = m.find(kwargs['accounts_file'])
+            m.download(f, path)
+            print('Downloaded')
+            ret = f"{path}/{kwargs['accounts_file']}"
+        except Exception as e:
+            ret = str(e)
+        return ret

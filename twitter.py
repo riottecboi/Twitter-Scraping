@@ -145,8 +145,17 @@ class Twitter(SetUp):
                 self.save_cookie(driver, path)
                 self.load_cookie(driver, path)
                 if followers is True:
+                    self.logger.info('Get number of followers from {}'.format(link))
+                    driver.get(link)
+                    get_followers = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/div[1]/div/div[5]/div[2]/a/span[1]/span')
+                    raw_followers = get_followers.text
+                    if len(raw_followers) > 1 and 'K' in raw_followers:
+                        numb_followers = float(raw_followers.replace('K', '')) * 1000
+                    else:
+                        numb_followers = float(raw_followers.replace(',', '.')) * 1000
                     link = link + '/followers'
                     driver.get(link)
+                    self.logger.info('Collecting {} follower\'s accounts'.format(numb_followers))
                     sleep(3)
                     last_height = driver.execute_script('return window.pageYOffset')
                     self.logger.info('Last height: {}'.format(last_height))
@@ -156,7 +165,7 @@ class Twitter(SetUp):
                     plus = 0
                     while True:
                         # Scroll down to bottom
-                        pixels = 1000 + plus
+                        pixels = 1200 + plus
                         self.logger.info('Scrolling down')
                         driver.execute_script("window.scrollTo(0, {})".format(pixels))
                         # Wait to load page
@@ -165,19 +174,23 @@ class Twitter(SetUp):
                         users = self.get_followers(driver)
                         # Calculate new scroll height and compare with last scroll height
                         new_height = driver.execute_script('return window.pageYOffset')
-                        self.logger.info('Updated height: {}'.format(new_height))
+                        self.logger.info('Updated height: {}px'.format(new_height))
                         follower.extend(users)
-
+                        f=sorted(set(follower))
                         # break condition
-                        if new_height == last_height:
+                        if len(f) >=numb_followers:
                             result={}
-                            f=sorted(set(follower))
                             self.logger.info('Finished for follower\'s account: {} followers'.format(len(f)))
                             break
                         else:
+                            self.logger.info('Updated {} followers'.format(len(f)))
+                            if len(f) >=numb_followers:
+                                result = {}
+                                self.logger.info('Finished for follower\'s account: {} followers'.format(len(f)))
+                                break
                             last_height = new_height
-                            self.logger.info('Last height: {}'.format(last_height))
-                            plus += 500
+                            self.logger.info('Last height: {}px'.format(last_height))
+                            plus += 1300
 
                     break
 
@@ -196,10 +209,13 @@ class Twitter(SetUp):
                             name = raw_name.get_attribute('innerHTML')
                         except:
                             name = None
-                        raw_username = driver.find_element_by_xpath(
-                            '/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[2]/div/span')
-                        username = raw_username.get_attribute('innerHTML')
-
+                        try:
+                            sleep(2)
+                            raw_username = driver.find_element_by_xpath(
+                                '/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[2]/div/span')
+                            username = raw_username.get_attribute('innerHTML')
+                        except:
+                            username = None
                         try:
                             check = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/'
                                                                  'div[2]/div/div/div[1]/div/div[1]/div/div[2]')
