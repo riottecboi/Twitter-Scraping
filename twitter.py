@@ -132,7 +132,7 @@ class Twitter(SetUp):
                             # login = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div')
                             # self.logger.info('Submit')
                             # login.click()
-                            self.needEmail(driver)
+                            self.needEmail(driver,phone=True)
                     sleep(3)
                     if needPhone in driver.page_source and 'Hint: ending in' in driver.page_source:
                         crashed = True
@@ -187,6 +187,7 @@ class Twitter(SetUp):
                             self.logger.info('Finished for follower\'s account: {} followers'.format(len(f)))
                             break
                         else:
+                            self.write_file('raw.txt',f)
                             self.logger.info('Updated {} followers'.format(len(f)))
                             if len(f) >=numb_followers:
                                 result = {}

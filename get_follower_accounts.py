@@ -41,7 +41,7 @@ try:
 except Exception as e:
     logger.info(str(e))
 if len(results) !=0:
-    followers = setting.write_file('/follower.txt', results)
+    followers = setting.write_file('follower.txt', results)
     logger.info('{} is done scrapped - removed this'.format('accounts.txt'))
     os.remove(account_path + f"/{'accounts.txt'}")
     account_files = os.listdir(account_path)
