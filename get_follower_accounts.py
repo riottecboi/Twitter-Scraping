@@ -7,7 +7,7 @@ import os
 import random
 
 setting = SetUp()
-logger = logging.getLogger('Twitter-test')
+logger = logging.getLogger('Twitter-followers')
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler(sys.stdout)
 ch.setLevel(logging.INFO)
@@ -40,12 +40,14 @@ try:
             results.extend(result[2])
 except Exception as e:
     logger.info(str(e))
-followers = setting.write_file('/follower.txt', results)
-logger.info('{} is done scrapped - removed this'.format('accounts.txt'))
-os.remove(account_path + f"/{'accounts.txt'}")
-account_files = os.listdir(account_path)
-if len(account_files) == 0:
-    logger.info('Syncing data to Mega Storage Cloud')
-    upload = setting.sync_to_mega(followers, **file)
-    logger.info('Result: {}'.format(upload))
-logger.info('Finished')
+if len(results) !=0:
+    followers = setting.write_file('/follower.txt', results)
+    logger.info('{} is done scrapped - removed this'.format('accounts.txt'))
+    os.remove(account_path + f"/{'accounts.txt'}")
+    account_files = os.listdir(account_path)
+    if len(account_files) == 0:
+        logger.info('Syncing data to Mega Storage Cloud')
+        upload = setting.sync_to_mega(followers, **file)
+        logger.info('Result: {}'.format(upload))
+    logger.info('Finished')
+logger.info('Unfinished')

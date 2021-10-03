@@ -15,12 +15,15 @@ class Twitter(SetUp):
         self.logger.info('Submit')
         inputBut.submit()
 
-    def needEmail(self, driver):
+    def needEmail(self, driver, phone=False):
         self.logger.info('Email input challenge')
         username = driver.find_element_by_name('text')
         username.clear()
         self.logger.info('Send email input')
-        username.send_keys(self.email)
+        if phone is False:
+            username.send_keys(self.email)
+        else:
+            username.send_keys(self.phone)
         inputb = driver.find_element_by_xpath('/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div')
         inputb.click()
         password = driver.find_element_by_name('password')
@@ -117,18 +120,19 @@ class Twitter(SetUp):
                                 subb.click()
                                 self.logger.info('Submit')
                         else:
-                            self.logger.info('Normal input challenge')
-                            username = driver.find_element_by_name('session[username_or_email]')
-                            username.clear()
-                            self.logger.info('Send email input')
-                            username.send_keys(self.email)
-                            password = driver.find_element_by_name('session[password]')
-                            password.clear()
-                            self.logger.info('Send password')
-                            password.send_keys(self.password)
-                            login = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div')
-                            self.logger.info('Submit')
-                            login.click()
+                            # self.logger.info('Normal input challenge')
+                            # username = driver.find_element_by_name('session[username_or_email]')
+                            # username.clear()
+                            # self.logger.info('Send email input')
+                            # username.send_keys(self.email)
+                            # password = driver.find_element_by_name('session[password]')
+                            # password.clear()
+                            # self.logger.info('Send password')
+                            # password.send_keys(self.password)
+                            # login = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div[2]/form/div/div[3]/div')
+                            # self.logger.info('Submit')
+                            # login.click()
+                            self.needEmail(driver)
                     sleep(3)
                     if needPhone in driver.page_source and 'Hint: ending in' in driver.page_source:
                         crashed = True
