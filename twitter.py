@@ -208,19 +208,59 @@ class Twitter(SetUp):
                         result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': True, 'Scrapped by': self.username}
                         break
                     else:
+                        ############# Get name of Twitter's account ##############
                         try:
                             sleep(5)
-                            raw_name = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[1]/div/span[1]/span')
+                            raw_name = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/'
+                                                                    'div/div/div[2]/div/div/div[1]/div/div[2]/div/div/'
+                                                                    'div[1]/div/span[1]/span')
                             name = raw_name.get_attribute('innerHTML')
                         except:
-                            name = None
+                            try:
+                                raw_name = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/'
+                                                                        'div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/'
+                                                                        'div/div[1]/div/span[1]/span')
+                                name = raw_name.get_attribute('innerHTML')
+                            except:
+                                name = None
+                        #############################################################
+                        ############# Get username of Twitter's account ##############
                         try:
-                            sleep(2)
-                            raw_username = driver.find_element_by_xpath(
-                                '/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]/div/div[2]/div/div/div[2]/div/span')
+                            sleep(5)
+                            raw_username = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/'
+                                                                        'div/div/div/div[2]/div/div/div[1]/div/div[2]/'
+                                                                        'div/div/div[2]/div/span')
                             username = raw_username.get_attribute('innerHTML')
                         except:
-                            username = None
+                            try:
+                                raw_username = driver.find_element_by_xpath(
+                                    '/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/'
+                                    'div[1]/div/div[2]/div/div/div[2]/div/span')
+                                username = raw_username.get_attribute('innerHTML')
+                            except:
+                                username = None
+                        #############################################################
+                        ############# Get location of Twitter's account ##############
+                        try:
+                            raw_location = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/'
+                                                                        'main/div/div/div/div/div/div[2]/div/div/'
+                                                                        'div[1]/div/div[4]/div/span[1]/span/span')
+                            location = raw_location.get_attribute('innerHTML')
+                        except:
+                            location = None
+                        #############################################################
+                        ############# Get bio of Twitter's account ##############
+                        try:
+                            raw_bio = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/span')
+                            bio = raw_bio.text
+                        except:
+                            try:
+                                raw_bio = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/div[2]/div/div/div[1]/div/div[3]/div/div/span[1]')
+                                bio = raw_bio.text
+                            except:
+                                bio = None
+                        #############################################################
+                        ############# Checking available message of Twitter's accounts ##############
                         try:
                             check = driver.find_element_by_xpath('/html/body/div/div/div/div[2]/main/div/div/div/div/div/'
                                                                  'div[2]/div/div/div[1]/div/div[1]/div/div[2]')
@@ -232,32 +272,32 @@ class Twitter(SetUp):
                                 available.click()
                                 canMg = True
                                 self.logger.info(f"This {link} profile available for message -- {canMg}")
-                                result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
+                                result = {'Name': name, 'Username': username, 'Messages': canMg, 'Location': location, 'Bio': bio, 'Links': link, 'Dead': False,'Scrapped by': self.username}
 
                             except:
                                 canMg = False
                                 check.click()
                                 self.logger.info(f"This {link} profile not available for message -- {canMg}")
-                                result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
+                                result = {'Name': name, 'Username': username, 'Messages': canMg, 'Location': location, 'Bio': bio, 'Links': link, 'Dead': False,'Scrapped by': self.username}
 
                         except:
                             canMg = False
                             self.logger.info(f"This {link} profile not available for message -- {canMg}")
-                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Links': link, 'Dead': False,'Scrapped by': self.username}
+                            result = {'Name': name, 'Username': username, 'Messages': canMg, 'Location': location, 'Bio': bio, 'Links': link, 'Dead': False,'Scrapped by': self.username}
                         break
-
+                        #############################################################
             except Exception as e:
                 canMg = "Error"
                 if "This account doesn’t exist" in driver.page_source:
                     canMg = False
                     self.logger.info('This account no longer exist')
-                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': True, 'Scrapped by': self.username}
+                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Location': None, 'Bio': None, 'Links': link, 'Dead': True, 'Scrapped by': self.username}
                     break
                 if error in driver.page_source:
                     self.logger.info('Error occured - Refresh page')
                     errors += 1
                     if errors > 3:
-                        result = {'Name': None, 'Username': None, 'Messages': 'Error', 'Links': link, 'Dead': None,
+                        result = {'Name': None, 'Username': None, 'Messages': 'Error', 'Location': None, 'Bio': None, 'Links': link, 'Dead': None,
                                   'Scrapped by': self.username}
                         break
                     else:
@@ -267,7 +307,7 @@ class Twitter(SetUp):
                 self.logger.info("Exception detected: {}".format(str(e)))
                 seleniumerrors += 1
                 if seleniumerrors > 3:
-                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Links': link, 'Dead': None,'Scrapped by': self.username}
+                    result = {'Name': None, 'Username': None, 'Messages': canMg, 'Location': None, 'Bio': None, 'Links': link, 'Dead': None,'Scrapped by': self.username}
                     break
                 else:
                     self.logger.info('{} try'.format(seleniumerrors))
