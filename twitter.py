@@ -277,9 +277,12 @@ class Twitter(SetUp):
         driver.quit()
         return result, crashed, f
 
-    def get_profile_by_video_clip_link(self, link):
+    def get_profile_by_video_clip_link(self, l):
         results = []
         driver = super().webdriver_init()
+        link = l
+        if 'www' in l:
+            link = l.replace('www', 'm')
         seleniumerrors = 0
         while True:
             try:
@@ -323,9 +326,12 @@ class Twitter(SetUp):
         driver.quit()
         return results
 
-    def get_profile_by_profile_link(self, link):
+    def get_profile_by_profile_link(self, l):
         results = []
         driver = super().webdriver_init()
+        link = l
+        if 'www' in l:
+            link = l.replace('www', 'm')
         seleniumerrors = 0
         while True:
             try:

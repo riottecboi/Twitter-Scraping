@@ -15,11 +15,11 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
-myfile = open('test.txt', 'r')
-contents = myfile.readlines()
-
 with open('config.json', encoding='utf-8') as json_data_file:
     file = json.load(json_data_file)
+
+myfile = open(file['twitch_file'], 'r')
+contents = myfile.readlines()
 
 conf_path = file['conf_path']
 conf_files = os.listdir(conf_path)
@@ -57,39 +57,49 @@ try:
             get_links = twitter.get_profile_by_profile_link(word)
             links.extend(get_links)
             print('\n')
-        elif kind == 'directory':
-            logger.info('This is directory link')
-            if check[2] == 'game':
-                get_links = twitter.get_profile_by_directory_link(word)
-            else:
-                get_links = twitter.get_profile_by_directory_link(word, v2=True)
-            links.extend(get_links)
-            print('\n')
-
+        # elif kind == 'directory':
+        #     logger.info('This is directory link')
+        #     if check[2] == 'game':
+        #         get_links = twitter.get_profile_by_directory_link(word)
+        #     else:
+        #         get_links = twitter.get_profile_by_directory_link(word, v2=True)
+        #     links.extend(get_links)
+        #     print('\n')
         count += 1
     logger.info('Appending data')
     for data in links:
         if data is None:
             continue
         if 'twitter' in data:
+            logger.info('Appending {} to twitter list'.format(data))
             twitter_list.append(data)
         elif 'twitch' in data:
+            logger.info('Appending {} to twitch list'.format(data))
             twitch_list.append(data)
         else:
+            logger.info('Appending {} to external list'.format(data))
             external_list.append(data)
 
     try:
         logger.info('Write Twitch links file')
-        p = setting.write_file('twitch.txt', twitch_list)
-        logger.info('File located at: {}'.format(p))
+        p = setting.write_file('twitchLinks.txt', twitch_list)
+        logger.info('File Twitch located at: {}'.format(p))
+        if len(twitch_list) != 0:
+            logger.info('Syncing Twitch data to Mega Storage Cloud')
+            upload = setting.sync_to_mega(twitch_list, **file)
+            logger.info('Result: {}'.format(upload))
     except Exception as e:
         logger.info('Exception occured: {}'.format(str(e)))
         pass
 
     try:
         logger.info('Write Twitter links file')
-        p = setting.write_file('links.txt', twitter_list)
-        logger.info('File located at: {}'.format(p))
+        p = setting.write_file('twitterLinks.txt', twitter_list)
+        logger.info('File Twitter located at: {}'.format(p))
+        if len(twitch_list) != 0:
+            logger.info('Syncing Twitter data to Mega Storage Cloud')
+            upload = setting.sync_to_mega(twitch_list, **file)
+            logger.info('Result: {}'.format(upload))
     except Exception as e:
         logger.info('Exception occured: {}'.format(str(e)))
         pass
@@ -97,13 +107,16 @@ try:
     try:
         logger.info('Write external links file')
         p = setting.write_file('externalLinks.txt', external_list)
-        logger.info('File located at: {}'.format(p))
+        logger.info('File external links located at: {}'.format(p))
+        if len(external_list) != 0:
+            logger.info('Syncing External links data to Mega Storage Cloud')
+            upload = setting.sync_to_mega(external_list, **file)
+            logger.info('Result: {}'.format(upload))
     except Exception as e:
         logger.info('Exception occured: {}'.format(str(e)))
         pass
+    logger.info('Finished')
 
 except Exception as e:
     logger.info(str(e))
-    #if ('home' or 'videos' or 'clips'
-    # updateWord = word + '/about'
-    # links.append(updateWord)
+    logger.info('Unfinished')
