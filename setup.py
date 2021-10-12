@@ -115,7 +115,7 @@ class SetUp:
     def generate_csv(self, raws):
         date = datetime.now().strftime("%Y_%m_%d-%I:%M:%S")
         path = '/tmp/data_{}.csv'.format(date)
-        headers = {"Name": None, "Username": None, "Messages": None, 'Location': None, 'Bio': None, "Links": None, "Dead": None, 'Scrapped by': None}
+        headers = {"Name": None, "Messages": None, 'Location': None, 'Bio': None, 'Site': None, "Links": None}
         try:
             with open(path, 'w', encoding='UTF8') as f:
                 w = csv.DictWriter(f, headers.keys())

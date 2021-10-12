@@ -55,14 +55,14 @@ try:
                 logger.info('Syncing data to Mega Storage Cloud')
                 upload = setting.sync_to_mega(generateCSV, **file)
                 logger.info('Result: {}'.format(upload))
-
-                with open('raw/data.json', 'w') as clean:
-                    clean.write(json.dumps([]))
-                    clean.close()
-                logger.info('Cleaned raw data')
+                if generateCSV != 'Can\'t generate CSV':
+                    with open('raw/data.json', 'w') as clean:
+                        clean.write(json.dumps([]))
+                        clean.close()
+                    logger.info('Cleaned raw data')
             else:
                 logger.info('Take a break time for 30 min')
-                sleep(30)
+                sleep(900)
     else:
         with open('raw/data.json', 'w') as clean:
             clean.write(json.dumps([]))
